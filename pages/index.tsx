@@ -19,6 +19,6 @@ export default function Index({}: Props) {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { conn } = await connect();
-  console.log(conn);
+  // console.log(conn);
   return { props: {} };
 };
