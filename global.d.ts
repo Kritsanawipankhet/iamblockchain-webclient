@@ -7,6 +7,8 @@ namespace NodeJS {
     MONGODB_URI: string;
     GOOGLE_CLIENT_ID: string;
     GOOGLE_CLIENT_SECRET: string;
+    GITHUB_CLIENT_ID: string;
+    GITHUB_CLIENT_SECRET: string;
     IAMBLOCKCHAIN_CLIENT_ID: string;
     IAMBLOCKCHAIN_CLIENT_SECRET: string;
     IAMBLOCKCHAIN_HOST: string;
