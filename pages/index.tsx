@@ -12,7 +12,13 @@ export default function Index({}: Props) {
         <title>IAM To do - IAMBLOCKCHAIN</title>
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
-      <div>index</div>
+      <div>
+        <form method="post" action="https://iamblockchain.vercel.app/api/user">
+          <button type="submit" value="submit">
+            POST
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
