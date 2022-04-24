@@ -6,6 +6,7 @@
   flex-direction: column;
   font-family: "Montserrat", sans-serif;
   height: 100vh;
+  min-width: 980px;
 }
 
 .container {

@@ -21,6 +21,7 @@ import {
   Box,
   Button,
   Flex,
+  Spacer,
   Tabs,
   TabList,
   TabPanels,
@@ -28,8 +29,13 @@ import {
   TabPanel,
   Text,
   Divider,
+  List,
+  ListItem,
+  Checkbox,
+  IconButton,
+  HStack,
 } from "@chakra-ui/react";
-import { AddIcon } from "@chakra-ui/icons";
+import { AddIcon, SmallCloseIcon, EditIcon } from "@chakra-ui/icons";
 const activeLabelStyles = {
   transform: "scale(0.85) translateY(-24px)",
 };
@@ -110,7 +116,7 @@ export default function Home({}: Props) {
                       <Box flex="1">
                         <FormControl
                           variant="floating"
-                          id="first-name"
+                          id="content"
                           // isRequired
                           // isInvalid
                         >
@@ -139,25 +145,182 @@ export default function Home({}: Props) {
                   <Box pt={0} pl={30} pb={4} pr={30}>
                     <Tabs variant="enclosed">
                       <TabList>
-                        <Tab fontSize="xs" fontWeight={500}>
+                        <Tab fontSize="14px" fontWeight={500}>
                           ALL
                         </Tab>
-                        <Tab fontSize="xs" fontWeight={500}>
+                        <Tab fontSize="14px" fontWeight={500}>
                           ACTIVE
                         </Tab>
-                        <Tab fontSize="xs" fontWeight={500}>
+                        <Tab fontSize="14px" fontWeight={500}>
                           COMPLETED
                         </Tab>
                       </TabList>
                       <TabPanels>
-                        <TabPanel>
-                          <p>one!</p>
+                        <TabPanel
+                          overflowY="scroll"
+                          h="360px"
+                          css={scrollbarStyle}
+                        >
+                          <List spacing={3} fontSize="14px" fontWeight={300}>
+                            <ListItem>
+                              <Flex gap={3} align="center">
+                                <Checkbox defaultChecked />
+                                <Text as="del">
+                                  Lorem ipsum dolor sit, amet consectetur
+                                  adipisicing elit. Perferendis.
+                                </Text>
+                                <Spacer />
+                                <HStack>
+                                  <IconButton
+                                    variant="outline"
+                                    aria-label="Edit"
+                                    size="xs"
+                                    icon={<EditIcon />}
+                                  />
+                                  <IconButton
+                                    variant="outline"
+                                    aria-label="Delete"
+                                    size="xs"
+                                    icon={<SmallCloseIcon />}
+                                  />
+                                </HStack>
+                              </Flex>
+                            </ListItem>
+                            <Divider />
+                            <ListItem>
+                              <Flex gap={3} align="center">
+                                <Checkbox />
+                                <Text>
+                                  Lorem ipsum dolor sit amet consectetur.
+                                </Text>
+                                <Spacer />
+                                <HStack>
+                                  <IconButton
+                                    variant="outline"
+                                    aria-label="Edit"
+                                    size="xs"
+                                    icon={<EditIcon />}
+                                  />
+                                  <IconButton
+                                    variant="outline"
+                                    aria-label="Delete"
+                                    size="xs"
+                                    icon={<SmallCloseIcon />}
+                                  />
+                                </HStack>
+                              </Flex>
+                            </ListItem>
+                            <Divider />
+                            <ListItem>
+                              <Flex gap={3} align="center">
+                                <Checkbox />
+                                <Text>Lorem ipsum dolor sit amet.</Text>
+                                <Spacer />
+                                <HStack>
+                                  <IconButton
+                                    variant="outline"
+                                    aria-label="Edit"
+                                    size="xs"
+                                    icon={<EditIcon />}
+                                  />
+                                  <IconButton
+                                    variant="outline"
+                                    aria-label="Delete"
+                                    size="xs"
+                                    icon={<SmallCloseIcon />}
+                                  />
+                                </HStack>
+                              </Flex>
+                            </ListItem>
+                            <Divider />
+                          </List>
                         </TabPanel>
-                        <TabPanel>
-                          <p>two!</p>
+                        <TabPanel
+                          overflowY="scroll"
+                          h="360px"
+                          css={scrollbarStyle}
+                        >
+                          <List spacing={3} fontSize="14px" fontWeight={300}>
+                            <ListItem>
+                              <Flex gap={3} align="center">
+                                <Checkbox />
+                                <Text>
+                                  Lorem ipsum dolor sit amet consectetur.
+                                </Text>
+                                <Spacer />
+                                <HStack>
+                                  <IconButton
+                                    variant="outline"
+                                    aria-label="Edit"
+                                    size="xs"
+                                    icon={<EditIcon />}
+                                  />
+                                  <IconButton
+                                    variant="outline"
+                                    aria-label="Delete"
+                                    size="xs"
+                                    icon={<SmallCloseIcon />}
+                                  />
+                                </HStack>
+                              </Flex>
+                            </ListItem>
+                            <Divider />
+                            <ListItem>
+                              <Flex gap={3} align="center">
+                                <Checkbox />
+                                <Text>Lorem ipsum dolor sit amet.</Text>
+                                <Spacer />
+                                <HStack>
+                                  <IconButton
+                                    variant="outline"
+                                    aria-label="Edit"
+                                    size="xs"
+                                    icon={<EditIcon />}
+                                  />
+                                  <IconButton
+                                    variant="outline"
+                                    aria-label="Delete"
+                                    size="xs"
+                                    icon={<SmallCloseIcon />}
+                                  />
+                                </HStack>
+                              </Flex>
+                            </ListItem>
+                            <Divider />
+                          </List>
                         </TabPanel>
-                        <TabPanel>
-                          <p>three!</p>
+                        <TabPanel
+                          overflowY="scroll"
+                          h="360px"
+                          css={scrollbarStyle}
+                        >
+                          <List spacing={3} fontSize="14px" fontWeight={300}>
+                            <ListItem>
+                              <Flex gap={3} align="center">
+                                <Checkbox defaultChecked />
+                                <Text as="del">
+                                  Lorem ipsum dolor sit, amet consectetur
+                                  adipisicing elit. Perferendis.
+                                </Text>
+                                <Spacer />
+                                <HStack>
+                                  <IconButton
+                                    variant="outline"
+                                    aria-label="Edit"
+                                    size="xs"
+                                    icon={<EditIcon />}
+                                  />
+                                  <IconButton
+                                    variant="outline"
+                                    aria-label="Delete"
+                                    size="xs"
+                                    icon={<SmallCloseIcon />}
+                                  />
+                                </HStack>
+                              </Flex>
+                            </ListItem>
+                            <Divider />
+                          </List>
                         </TabPanel>
                       </TabPanels>
                     </Tabs>
@@ -191,6 +354,19 @@ onClick={() => {
 Signout
 </button> */
 }
+
+const scrollbarStyle = {
+  "&::-webkit-scrollbar": {
+    width: "4px",
+  },
+  "&::-webkit-scrollbar-track": {
+    width: "6px",
+  },
+  "&::-webkit-scrollbar-thumb": {
+    background: "#f6f5f7",
+    borderRadius: "24px",
+  },
+};
 
 export const theme = extendTheme({
   components: {
