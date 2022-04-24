@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import Index from "@/styles/auth.module.css";
 import Head from "next/head";
 import Image from "next/image";
-import { getProviders, signIn, getCsrfToken } from "next-auth/react";
+import { getProviders, signIn, getCsrfToken, signOut } from "next-auth/react";
 import { GetServerSideProps } from "next";
 type Props = {
   providers: [
@@ -41,7 +41,7 @@ export default function Signin({ providers, csrfToken }: Props) {
         >
           <div className={`${Index.formContainer} ${Index.signUpContainer}`}>
             <form action="#" className={Index.formGlobal}>
-              <h1 className={Index.h1Global}>Sign Up IAM To do</h1>
+              <h1 className={Index.h1Global}>Create Account IAM To do</h1>
               <div className={Index.socialContainer}>
                 <a
                   onClick={() => signIn("iamblockchain")}
@@ -162,9 +162,9 @@ export default function Signin({ providers, csrfToken }: Props) {
                 className={Index.inputGlobal}
                 placeholder="Password"
               />
-              {/* <a href="#" className={`${Index.aGlobal}`}>
+              <a href="#" className={`${Index.aGlobal}`}>
                 Forgot your password?
-              </a> */}
+              </a>
               <button className={`${Index.buttonGlobal} ${Index.mt2}`}>
                 Sign In
               </button>
@@ -189,6 +189,7 @@ export default function Signin({ providers, csrfToken }: Props) {
                   className={`${Index.buttonGlobal} ${Index.ghost} `}
                   id="signIn"
                   onClick={() => {
+                    signOut({ redirect: false });
                     setSignUp(false);
                   }}
                 >
@@ -213,6 +214,7 @@ export default function Signin({ providers, csrfToken }: Props) {
                   className={`${Index.buttonGlobal} ${Index.ghost}`}
                   id="signUp"
                   onClick={() => {
+                    signOut({ redirect: false });
                     setSignUp(true);
                   }}
                 >
