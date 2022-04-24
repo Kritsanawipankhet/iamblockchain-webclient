@@ -43,6 +43,20 @@ const activeLabelStyles = {
 type Props = {};
 declare let document: any;
 let router: NextRouter;
+
+const scrollbarStyle = {
+  "&::-webkit-scrollbar": {
+    width: "4px",
+  },
+  "&::-webkit-scrollbar-track": {
+    width: "6px",
+  },
+  "&::-webkit-scrollbar-thumb": {
+    background: "#f6f5f7",
+    borderRadius: "24px",
+  },
+};
+
 export default function Home({}: Props) {
   router = useRouter();
   // const { data: session, status } = useSession();
@@ -354,19 +368,6 @@ onClick={() => {
 Signout
 </button> */
 }
-
-const scrollbarStyle = {
-  "&::-webkit-scrollbar": {
-    width: "4px",
-  },
-  "&::-webkit-scrollbar-track": {
-    width: "6px",
-  },
-  "&::-webkit-scrollbar-thumb": {
-    background: "#f6f5f7",
-    borderRadius: "24px",
-  },
-};
 
 export const theme = extendTheme({
   components: {
