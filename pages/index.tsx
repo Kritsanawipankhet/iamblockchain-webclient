@@ -6,7 +6,7 @@ import type { Session } from "next-auth";
 import { useSession, getSession } from "next-auth/react";
 import { useRouter, type NextRouter } from "next/router";
 import { signOut } from "next-auth/react";
-import Index from "@/styles/home.module.css";
+import Index from "@/styles/todo.module.css";
 import Image from "next/image";
 
 import {
