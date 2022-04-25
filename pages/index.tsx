@@ -8,8 +8,10 @@ import { useRouter, type NextRouter } from "next/router";
 import { signOut } from "next-auth/react";
 import Index from "@/styles/todo.module.css";
 import Image from "next/image";
-
+import UpdateModal from "@/components/todo/updateModal";
+import DeleteModal from "@/components/todo/deleteModal";
 import {
+  useDisclosure,
   Container,
   ChakraProvider,
   FormControl,
@@ -34,6 +36,7 @@ import {
   Checkbox,
   IconButton,
   HStack,
+  Tooltip,
 } from "@chakra-ui/react";
 import { AddIcon, SmallCloseIcon, EditIcon } from "@chakra-ui/icons";
 const activeLabelStyles = {
@@ -59,6 +62,16 @@ const scrollbarStyle = {
 
 export default function Home({}: Props) {
   router = useRouter();
+  const {
+    isOpen: isEditOpen,
+    onOpen: onEditOpen,
+    onClose: onEditClose,
+  } = useDisclosure();
+  const {
+    isOpen: isDelOpen,
+    onOpen: onDelOpen,
+    onClose: onDelClose,
+  } = useDisclosure();
   // const { data: session, status } = useSession();
   // const loading = status === "loading";
   //const [content, setContent] = useState();
@@ -156,195 +169,215 @@ export default function Home({}: Props) {
                       </Box>
                     </Flex>
                   </Box>
-                  <Box pt={0} pl={30} pb={4} pr={30}>
-                    <Tabs variant="enclosed">
-                      <TabList>
-                        <Tab fontSize="14px" fontWeight={500}>
-                          ALL
-                        </Tab>
-                        <Tab fontSize="14px" fontWeight={500}>
-                          ACTIVE
-                        </Tab>
-                        <Tab fontSize="14px" fontWeight={500}>
-                          COMPLETED
-                        </Tab>
-                      </TabList>
-                      <TabPanels>
-                        <TabPanel
-                          overflowY="scroll"
-                          h="360px"
-                          css={scrollbarStyle}
-                        >
-                          <List spacing={3} fontSize="14px" fontWeight={300}>
-                            <ListItem>
-                              <Flex gap={3} align="center">
-                                <Checkbox defaultChecked />
-                                <Text as="del">
-                                  Lorem ipsum dolor sit, amet consectetur
-                                  adipisicing elit. Perferendis.
-                                </Text>
-                                <Spacer />
-                                <HStack>
-                                  <IconButton
-                                    variant="outline"
-                                    aria-label="Edit"
-                                    size="xs"
-                                    icon={<EditIcon />}
-                                  />
-                                  <IconButton
-                                    variant="outline"
-                                    aria-label="Delete"
-                                    size="xs"
-                                    icon={<SmallCloseIcon />}
-                                  />
-                                </HStack>
-                              </Flex>
-                            </ListItem>
-                            <Divider />
-                            <ListItem>
-                              <Flex gap={3} align="center">
-                                <Checkbox />
-                                <Text>
-                                  Lorem ipsum dolor sit amet consectetur.
-                                </Text>
-                                <Spacer />
-                                <HStack>
-                                  <IconButton
-                                    variant="outline"
-                                    aria-label="Edit"
-                                    size="xs"
-                                    icon={<EditIcon />}
-                                  />
-                                  <IconButton
-                                    variant="outline"
-                                    aria-label="Delete"
-                                    size="xs"
-                                    icon={<SmallCloseIcon />}
-                                  />
-                                </HStack>
-                              </Flex>
-                            </ListItem>
-                            <Divider />
-                            <ListItem>
-                              <Flex gap={3} align="center">
-                                <Checkbox />
-                                <Text>Lorem ipsum dolor sit amet.</Text>
-                                <Spacer />
-                                <HStack>
-                                  <IconButton
-                                    variant="outline"
-                                    aria-label="Edit"
-                                    size="xs"
-                                    icon={<EditIcon />}
-                                  />
-                                  <IconButton
-                                    variant="outline"
-                                    aria-label="Delete"
-                                    size="xs"
-                                    icon={<SmallCloseIcon />}
-                                  />
-                                </HStack>
-                              </Flex>
-                            </ListItem>
-                            <Divider />
-                          </List>
-                        </TabPanel>
-                        <TabPanel
-                          overflowY="scroll"
-                          h="360px"
-                          css={scrollbarStyle}
-                        >
-                          <List spacing={3} fontSize="14px" fontWeight={300}>
-                            <ListItem>
-                              <Flex gap={3} align="center">
-                                <Checkbox />
-                                <Text>
-                                  Lorem ipsum dolor sit amet consectetur.
-                                </Text>
-                                <Spacer />
-                                <HStack>
-                                  <IconButton
-                                    variant="outline"
-                                    aria-label="Edit"
-                                    size="xs"
-                                    icon={<EditIcon />}
-                                  />
-                                  <IconButton
-                                    variant="outline"
-                                    aria-label="Delete"
-                                    size="xs"
-                                    icon={<SmallCloseIcon />}
-                                  />
-                                </HStack>
-                              </Flex>
-                            </ListItem>
-                            <Divider />
-                            <ListItem>
-                              <Flex gap={3} align="center">
-                                <Checkbox />
-                                <Text>Lorem ipsum dolor sit amet.</Text>
-                                <Spacer />
-                                <HStack>
-                                  <IconButton
-                                    variant="outline"
-                                    aria-label="Edit"
-                                    size="xs"
-                                    icon={<EditIcon />}
-                                  />
-                                  <IconButton
-                                    variant="outline"
-                                    aria-label="Delete"
-                                    size="xs"
-                                    icon={<SmallCloseIcon />}
-                                  />
-                                </HStack>
-                              </Flex>
-                            </ListItem>
-                            <Divider />
-                          </List>
-                        </TabPanel>
-                        <TabPanel
-                          overflowY="scroll"
-                          h="360px"
-                          css={scrollbarStyle}
-                        >
-                          <List spacing={3} fontSize="14px" fontWeight={300}>
-                            <ListItem>
-                              <Flex gap={3} align="center">
-                                <Checkbox defaultChecked />
-                                <Text as="del">
-                                  Lorem ipsum dolor sit, amet consectetur
-                                  adipisicing elit. Perferendis.
-                                </Text>
-                                <Spacer />
-                                <HStack>
-                                  <IconButton
-                                    variant="outline"
-                                    aria-label="Edit"
-                                    size="xs"
-                                    icon={<EditIcon />}
-                                  />
-                                  <IconButton
-                                    variant="outline"
-                                    aria-label="Delete"
-                                    size="xs"
-                                    icon={<SmallCloseIcon />}
-                                  />
-                                </HStack>
-                              </Flex>
-                            </ListItem>
-                            <Divider />
-                          </List>
-                        </TabPanel>
-                      </TabPanels>
-                    </Tabs>
-                  </Box>
                 </ChakraProvider>
+                <Box pt={0} pl={30} pb={4} pr={30}>
+                  <Tabs variant="enclosed">
+                    <TabList>
+                      <Tab fontSize="14px" fontWeight={500}>
+                        ALL
+                      </Tab>
+                      <Tab fontSize="14px" fontWeight={500}>
+                        ACTIVE
+                      </Tab>
+                      <Tab fontSize="14px" fontWeight={500}>
+                        COMPLETED
+                      </Tab>
+                    </TabList>
+                    <TabPanels>
+                      <TabPanel
+                        overflowY="scroll"
+                        h="360px"
+                        css={scrollbarStyle}
+                      >
+                        <List spacing={3} fontSize="14px" fontWeight={300}>
+                          <ListItem>
+                            <Flex gap={3} align="center">
+                              <Checkbox defaultChecked />
+                              <Text as="del">
+                                Lorem ipsum dolor sit, amet consectetur
+                                adipisicing elit. Perferendis.
+                              </Text>
+                              <Spacer />
+                              <HStack>
+                                <Tooltip label="Edit" placement="top-start">
+                                  <IconButton
+                                    variant="outline"
+                                    aria-label="Edit"
+                                    size="xs"
+                                    icon={<EditIcon />}
+                                    onClick={onEditOpen}
+                                  />
+                                </Tooltip>
+                                <Tooltip label="Delete" placement="top-start">
+                                  <IconButton
+                                    variant="outline"
+                                    aria-label="Delete"
+                                    size="xs"
+                                    icon={<SmallCloseIcon />}
+                                    onClick={onDelOpen}
+                                  />
+                                </Tooltip>
+                              </HStack>
+                            </Flex>
+                          </ListItem>
+                          <Divider />
+                          <ListItem>
+                            <Flex gap={3} align="center">
+                              <Checkbox />
+                              <Text>
+                                Lorem ipsum dolor sit amet consectetur.
+                              </Text>
+                              <Spacer />
+                              <HStack>
+                                <Tooltip label="Edit" placement="top-start">
+                                  <IconButton
+                                    variant="outline"
+                                    aria-label="Edit"
+                                    size="xs"
+                                    icon={<EditIcon />}
+                                  />
+                                </Tooltip>
+                                <Tooltip label="Delete" placement="top-start">
+                                  <IconButton
+                                    variant="outline"
+                                    aria-label="Delete"
+                                    size="xs"
+                                    icon={<SmallCloseIcon />}
+                                  />
+                                </Tooltip>
+                              </HStack>
+                            </Flex>
+                          </ListItem>
+                          <Divider />
+                          <ListItem>
+                            <Flex gap={3} align="center">
+                              <Checkbox />
+                              <Text>Lorem ipsum dolor sit amet.</Text>
+                              <Spacer />
+                              <HStack>
+                                <Tooltip label="Edit" placement="top-start">
+                                  <IconButton
+                                    variant="outline"
+                                    aria-label="Edit"
+                                    size="xs"
+                                    icon={<EditIcon />}
+                                  />
+                                </Tooltip>
+                                <Tooltip label="Delete" placement="top-start">
+                                  <IconButton
+                                    variant="outline"
+                                    aria-label="Delete"
+                                    size="xs"
+                                    icon={<SmallCloseIcon />}
+                                  />
+                                </Tooltip>
+                              </HStack>
+                            </Flex>
+                          </ListItem>
+                          <Divider />
+                        </List>
+                      </TabPanel>
+                      <TabPanel
+                        overflowY="scroll"
+                        h="360px"
+                        css={scrollbarStyle}
+                      >
+                        <List spacing={3} fontSize="14px" fontWeight={300}>
+                          <ListItem>
+                            <Flex gap={3} align="center">
+                              <Checkbox />
+                              <Text>
+                                Lorem ipsum dolor sit amet consectetur.
+                              </Text>
+                              <Spacer />
+                              <HStack>
+                                <IconButton
+                                  variant="outline"
+                                  aria-label="Edit"
+                                  size="xs"
+                                  icon={<EditIcon />}
+                                />
+                                <IconButton
+                                  variant="outline"
+                                  aria-label="Delete"
+                                  size="xs"
+                                  icon={<SmallCloseIcon />}
+                                />
+                              </HStack>
+                            </Flex>
+                          </ListItem>
+                          <Divider />
+                          <ListItem>
+                            <Flex gap={3} align="center">
+                              <Checkbox />
+                              <Text>Lorem ipsum dolor sit amet.</Text>
+                              <Spacer />
+                              <HStack>
+                                <IconButton
+                                  variant="outline"
+                                  aria-label="Edit"
+                                  size="xs"
+                                  icon={<EditIcon />}
+                                />
+                                <IconButton
+                                  variant="outline"
+                                  aria-label="Delete"
+                                  size="xs"
+                                  icon={<SmallCloseIcon />}
+                                />
+                              </HStack>
+                            </Flex>
+                          </ListItem>
+                          <Divider />
+                        </List>
+                      </TabPanel>
+                      <TabPanel
+                        overflowY="scroll"
+                        h="360px"
+                        css={scrollbarStyle}
+                      >
+                        <List spacing={3} fontSize="14px" fontWeight={300}>
+                          <ListItem>
+                            <Flex gap={3} align="center">
+                              <Checkbox defaultChecked />
+                              <Text as="del">
+                                Lorem ipsum dolor sit, amet consectetur
+                                adipisicing elit. Perferendis.
+                              </Text>
+                              <Spacer />
+                              <HStack>
+                                <Tooltip label="Edit" placement="top-start">
+                                  <IconButton
+                                    variant="outline"
+                                    aria-label="Edit"
+                                    size="xs"
+                                    icon={<EditIcon />}
+                                  />
+                                </Tooltip>
+                                <Tooltip label="Delete" placement="top-start">
+                                  <IconButton
+                                    variant="outline"
+                                    aria-label="Delete"
+                                    size="xs"
+                                    icon={<SmallCloseIcon />}
+                                  />
+                                </Tooltip>
+                              </HStack>
+                            </Flex>
+                          </ListItem>
+                          <Divider />
+                        </List>
+                      </TabPanel>
+                    </TabPanels>
+                  </Tabs>
+                </Box>
               </div>
             </div>
           </div>
         </div>
       </div>
+      <UpdateModal isOpen={isEditOpen} onClose={onEditClose} />
+      <DeleteModal isOpen={isDelOpen} onClose={onDelClose} />
     </>
   );
 }
