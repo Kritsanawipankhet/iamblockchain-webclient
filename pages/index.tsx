@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Head from "next/head";
 import { GetServerSideProps } from "next";
 // import { connect } from "../libs/mongoose";
@@ -72,6 +72,7 @@ export default function Home({}: Props) {
     onOpen: onDelOpen,
     onClose: onDelClose,
   } = useDisclosure();
+  const finalRef: any = React.useRef();
   // const { data: session, status } = useSession();
   // const loading = status === "loading";
   //const [content, setContent] = useState();

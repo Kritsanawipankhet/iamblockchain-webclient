@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   ChakraProvider,
   VStack,
@@ -23,25 +23,18 @@ import {
 type Props = {
   isOpen: boolean;
   onClose: () => void;
-  initialRef?: React.RefObject<HTMLInputElement>;
-  finalRef?: React.RefObject<HTMLInputElement>;
 };
 
-export default function UpdateModal({
-  isOpen,
-  onClose,
-  initialRef,
-  finalRef,
-}: Props) {
+export default function UpdateModal({ isOpen, onClose }: Props) {
   const [todo, setTodo] = useState(
     "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Perferendis."
   );
+  const initialRef: any = React.useRef();
 
   return (
     <>
       <Modal
         initialFocusRef={initialRef}
-        finalFocusRef={finalRef}
         isOpen={isOpen}
         onClose={onClose}
         isCentered

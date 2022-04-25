@@ -34,7 +34,7 @@ export default function DeleteModal({ isOpen, onClose, cancelRef }: Props) {
             </AlertDialogHeader>
 
             <AlertDialogBody>
-              Are you sure? You can't undo this action afterwards.
+              Are you sure? You can&rsquo;t undo this action afterwards.
             </AlertDialogBody>
 
             <AlertDialogFooter>
