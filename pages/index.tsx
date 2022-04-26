@@ -191,13 +191,11 @@ export default function Home({}: Props) {
                         css={scrollbarStyle}
                       >
                         <List spacing={3} fontSize="14px" fontWeight={300}>
+                          <Divider />
                           <ListItem>
                             <Flex gap={3} align="center">
                               <Checkbox defaultChecked />
-                              <Text as="del">
-                                Lorem ipsum dolor sit, amet consectetur
-                                adipisicing elit. Perferendis.
-                              </Text>
+                              <Text>Test API</Text>
                               <Spacer />
                               <HStack>
                                 <Tooltip label="Edit" placement="top-start">
@@ -225,9 +223,7 @@ export default function Home({}: Props) {
                           <ListItem>
                             <Flex gap={3} align="center">
                               <Checkbox />
-                              <Text>
-                                Lorem ipsum dolor sit amet consectetur.
-                              </Text>
+                              <Text>Learn to use Solidity</Text>
                               <Spacer />
                               <HStack>
                                 <Tooltip label="Edit" placement="top-start">
@@ -253,7 +249,7 @@ export default function Home({}: Props) {
                           <ListItem>
                             <Flex gap={3} align="center">
                               <Checkbox />
-                              <Text>Lorem ipsum dolor sit amet.</Text>
+                              <Text as="del">Learn Web3.js</Text>
                               <Spacer />
                               <HStack>
                                 <Tooltip label="Edit" placement="top-start">
@@ -287,9 +283,7 @@ export default function Home({}: Props) {
                           <ListItem>
                             <Flex gap={3} align="center">
                               <Checkbox />
-                              <Text>
-                                Lorem ipsum dolor sit amet consectetur.
-                              </Text>
+                              <Text>Sequence diagram design</Text>
                               <Spacer />
                               <HStack>
                                 <IconButton
@@ -311,7 +305,7 @@ export default function Home({}: Props) {
                           <ListItem>
                             <Flex gap={3} align="center">
                               <Checkbox />
-                              <Text>Lorem ipsum dolor sit amet.</Text>
+                              <Text>Sequence diagram design</Text>
                               <Spacer />
                               <HStack>
                                 <IconButton
@@ -341,10 +335,7 @@ export default function Home({}: Props) {
                           <ListItem>
                             <Flex gap={3} align="center">
                               <Checkbox defaultChecked />
-                              <Text as="del">
-                                Lorem ipsum dolor sit, amet consectetur
-                                adipisicing elit. Perferendis.
-                              </Text>
+                              <Text>Learn to use Solidity</Text>
                               <Spacer />
                               <HStack>
                                 <Tooltip label="Edit" placement="top-start">
