@@ -8,16 +8,19 @@ export async function middleware(req: NextApiRequest) {
     req: req,
     secret: process.env.NEXTAUTH_SECRET,
   });
-  //console.log("session in middleware: ", session);
 
   if (session) {
     return NextResponse.next();
   } else {
-    return new Response(JSON.stringify({ message: "Not authenticated." }), {
-      status: 401,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    if (req.url + "/api/user/create") {
+      return NextResponse.next();
+    } else {
+      return new Response(JSON.stringify({ message: "Not authenticated." }), {
+        status: 401,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    }
   }
 }

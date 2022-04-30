@@ -8,6 +8,13 @@ import { GetServerSideProps } from "next";
 import Link from "next/link";
 import Swal from "sweetalert2";
 import { getToken } from "next-auth/jwt";
+import { FormControl, Input, FormErrorMessage } from "@chakra-ui/react";
+import FadeIn from "react-fade-in";
+import Lottie from "lottie-react";
+import * as loadingData from "@/components/loading/loading.json";
+import { Formik } from "formik";
+import { regExpEmail } from "@/libs/regex";
+
 type Props = {
   providers: [
     {
@@ -22,8 +29,10 @@ type Props = {
 };
 
 export default function Signin({ providers, csrfToken }: Props) {
-  const route = useRouter();
-  if (route.query.error === "OAuthAccountNotLinked") {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+
+  if (router.query.error === "OAuthAccountNotLinked") {
     Swal.fire({
       title: "Account Not Linked",
       html: "Can't connect to the provider you need. <br><small>Because the email is already used or tied to another service provider. If you want to connect to this email You must log in and connect again.</small>",
@@ -38,103 +47,222 @@ export default function Signin({ providers, csrfToken }: Props) {
         <title>IAM To do - Authentication | IAMBLOCKCHAIN</title>
       </Head>
       <div className={Index.main}>
-        <div className={`${Index.container}`} id="container">
-          <div className={`${Index.formContainer} ${Index.signInContainer}`}>
-            <form
-              method="post"
-              action="/api/auth/callback/credentials"
-              className={Index.formGlobal}
-            >
-              <h1 className={Index.h1Global}>Sign in IAM To do</h1>
-              <div className={Index.socialContainer}>
-                <a
-                  onClick={() => signIn("iamblockchain")}
-                  className={`${Index.aGlobal} ${Index.social}`}
-                >
-                  <Image
-                    src="/iam.svg"
-                    alt="IAM To do"
-                    width={40}
-                    height={40}
-                  />
-                </a>
-                <a
-                  onClick={() => signIn("google")}
-                  className={`${Index.aGlobal} ${Index.social}`}
-                >
-                  <Image
-                    src="/google.svg"
-                    alt="Google"
-                    width={40}
-                    height={40}
-                  />
-                </a>
-                <a
-                  onClick={() => signIn("github")}
-                  className={`${Index.aGlobal} ${Index.social}`}
-                >
-                  <Image
-                    src="/github.svg"
-                    alt="Github"
-                    width={40}
-                    height={40}
-                  />
-                </a>
-              </div>
-              <span className={Index.spanGlobal}>or use your account</span>
-              <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
-              <input
-                name="email"
-                type="email"
-                className={Index.inputGlobal}
-                placeholder="Email"
-                autoComplete="off"
-              />
-              <input
-                name="password"
-                type="password"
-                className={Index.inputGlobal}
-                placeholder="Password"
-              />
-              <a href="#" className={`${Index.aGlobal}`}>
-                Forgot your password?
-              </a>
-              <button className={`${Index.buttonGlobal} ${Index.mt2}`}>
-                Sign In
-              </button>
-            </form>
-          </div>
-          <div className={Index.overlayContainer}>
-            <div className={Index.overlay}>
-              <div className={`${Index.overlayPanel} ${Index.overlayRight}`}>
-                <div className={`${Index.logo}`}>
-                  <Image
-                    src="/iam.svg"
-                    alt="IAM To do"
-                    width={100}
-                    height={100}
-                  />
+        {loading ? (
+          <FadeIn>
+            <div style={{ display: "flex" }}>
+              <Lottie animationData={loadingData} loop autoplay />
+            </div>
+          </FadeIn>
+        ) : (
+          <div className={`${Index.container}`} id="container">
+            <div className={`${Index.formContainer} ${Index.signInContainer}`}>
+              <Formik
+                initialValues={{
+                  email: "",
+                  password: "",
+                }}
+                validate={(values) => {
+                  const errors: any = {};
+                  if (regExpEmail(values.email)) {
+                    errors.email = "This email address is not valid.";
+                  }
+                  if (values.password.length <= 6) {
+                    errors.password = "Password must be at least 6 characters.";
+                  }
+                  return errors;
+                }}
+                onSubmit={(values, { setSubmitting }) => {
+                  setTimeout(async () => {
+                    const res = await signIn("credentials", {
+                      redirect: false,
+                      email: values.email,
+                      password: values.password,
+                    }).then((data: any) => {
+                      if (data.error === "No user found with the email") {
+                        Swal.fire({
+                          html: "No user found with the email.<br><small>If you want to connect to this email You must sign up.</small>",
+                          icon: "error",
+                          confirmButtonColor: "#007bff",
+                        });
+                      } else if (
+                        data.error === "Password doesnt match with the user"
+                      ) {
+                        Swal.fire({
+                          html: "Password doesn't match with the user<br><small>If you want to connect to this email You must reset your password..</small>",
+                          icon: "error",
+                          confirmButtonColor: "#007bff",
+                        });
+                      } else {
+                        setLoading(true);
+                        setTimeout(async () => {
+                          router.push("/");
+                        }, 1000);
+                      }
+                    });
+
+                    setSubmitting(false);
+                  }, 400);
+                }}
+              >
+                {({
+                  values,
+                  errors,
+                  touched,
+                  handleChange,
+                  handleBlur,
+                  handleSubmit,
+                  isSubmitting,
+                }) => (
+                  <form onSubmit={handleSubmit} className={Index.formGlobal}>
+                    <h1 className={Index.h1Global}>Sign in IAM To do</h1>
+                    <div className={Index.socialContainer}>
+                      <a
+                        onClick={() => signIn("iamblockchain")}
+                        className={`${Index.aGlobal} ${Index.social}`}
+                      >
+                        <Image
+                          src="/iam.svg"
+                          alt="IAM To do"
+                          width={40}
+                          height={40}
+                        />
+                      </a>
+                      <a
+                        onClick={() => signIn("google")}
+                        className={`${Index.aGlobal} ${Index.social}`}
+                      >
+                        <Image
+                          src="/google.svg"
+                          alt="Google"
+                          width={40}
+                          height={40}
+                        />
+                      </a>
+                      <a
+                        onClick={() => signIn("github")}
+                        className={`${Index.aGlobal} ${Index.social}`}
+                      >
+                        <Image
+                          src="/github.svg"
+                          alt="Github"
+                          width={40}
+                          height={40}
+                        />
+                      </a>
+                    </div>
+                    <span className={Index.spanGlobal}>
+                      or use your account
+                    </span>
+                    <input
+                      name="csrfToken"
+                      type="hidden"
+                      defaultValue={csrfToken}
+                    />
+                    <FormControl
+                      mt="3"
+                      mb="1"
+                      isRequired
+                      isInvalid={
+                        errors.email && touched.email && errors.email
+                          ? true
+                          : false
+                      }
+                    >
+                      <Input
+                        id="email"
+                        name="email"
+                        type="email"
+                        placeholder="sample@email.com"
+                        autoComplete="off"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values.email}
+                        required={true}
+                      />
+                      {errors.email && touched.email && errors.email ? (
+                        <FormErrorMessage fontSize="xs">
+                          {errors.email}
+                        </FormErrorMessage>
+                      ) : (
+                        ""
+                      )}
+                    </FormControl>
+                    <FormControl
+                      mt="2"
+                      mb="1"
+                      isRequired
+                      isInvalid={
+                        errors.password && touched.password && errors.password
+                          ? true
+                          : false
+                      }
+                    >
+                      <Input
+                        id="password"
+                        name="password"
+                        type="password"
+                        placeholder="Password"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values.password}
+                        required={true}
+                      />
+                      {errors.password &&
+                      touched.password &&
+                      errors.password ? (
+                        <FormErrorMessage fontSize="xs">
+                          {errors.password}
+                        </FormErrorMessage>
+                      ) : (
+                        ""
+                      )}
+                    </FormControl>
+                    <a href="#" className={`${Index.aGlobal}`}>
+                      Forgot your password?
+                    </a>
+                    <button
+                      disabled={isSubmitting}
+                      type="submit"
+                      className={`${Index.buttonGlobal} ${Index.mt2}`}
+                    >
+                      Sign In
+                    </button>
+                  </form>
+                )}
+              </Formik>
+            </div>
+            <div className={Index.overlayContainer}>
+              <div className={Index.overlay}>
+                <div className={`${Index.overlayPanel} ${Index.overlayRight}`}>
+                  <div className={`${Index.logo}`}>
+                    <Image
+                      src="/iam.svg"
+                      alt="IAM To do"
+                      width={100}
+                      height={100}
+                    />
+                  </div>
+                  <h1 className={Index.h1Global}>Hello, Friend!</h1>
+                  <p className={Index.pGlobal}>
+                    Enter your personal details and start with us &quot;IAM To
+                    do&quot;
+                  </p>
+                  <Link href="/auth/signup" passHref>
+                    <button
+                      className={`${Index.buttonGlobal} ${Index.ghost}`}
+                      id="signUp"
+                      onClick={() => {
+                        signOut({ redirect: false });
+                      }}
+                    >
+                      Sign Up
+                    </button>
+                  </Link>
                 </div>
-                <h1 className={Index.h1Global}>Hello, Friend!</h1>
-                <p className={Index.pGlobal}>
-                  Enter your personal details and start with us &quot;IAM To
-                  do&quot;
-                </p>
-                <Link href="/auth/signup" passHref>
-                  <button
-                    className={`${Index.buttonGlobal} ${Index.ghost}`}
-                    id="signUp"
-                    onClick={() => {
-                      signOut({ redirect: false });
-                    }}
-                  >
-                    Sign Up
-                  </button>
-                </Link>
               </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </>
   );

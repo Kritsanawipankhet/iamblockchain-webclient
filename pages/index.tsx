@@ -12,7 +12,6 @@ import UpdateModal from "@/components/todo/updateModal";
 import DeleteModal from "@/components/todo/deleteModal";
 import {
   useDisclosure,
-  Container,
   ChakraProvider,
   FormControl,
   FormErrorMessage,
@@ -128,7 +127,7 @@ export default function Home({ user }: Props) {
                     onClick={() => {
                       signOut({
                         redirect: true,
-                        callbackUrl: `${process.env.HOSTNAME}/auth`,
+                        callbackUrl: `${process.env.HOSTNAME}/auth/signin`,
                       });
                     }}
                   >

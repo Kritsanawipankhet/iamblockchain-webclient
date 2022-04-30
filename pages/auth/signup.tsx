@@ -16,7 +16,12 @@ import {
   Input,
   Button,
 } from "@chakra-ui/react";
-import { regExpEmail } from "@/libs/regex";
+import { regExpEmail, regExpName } from "@/libs/regex";
+import * as loadingData from "@/components/loading/loading.json";
+import FadeIn from "react-fade-in";
+import Lottie from "lottie-react";
+import Swal from "sweetalert2";
+
 type Props = {
   providers: [
     {
@@ -35,7 +40,8 @@ type Props = {
 };
 
 export default function Signin({ providers, csrfToken, user }: Props) {
-  const route = useRouter();
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
   return (
     <>
@@ -43,231 +49,269 @@ export default function Signin({ providers, csrfToken, user }: Props) {
         <title>IAM To do - Authentication | IAMBLOCKCHAIN</title>
       </Head>
       <div className={Index.main}>
-        <div
-          className={`${Index.container} ${Index.rightPanelActive}`}
-          id="container"
-        >
-          <div className={`${Index.formContainer} ${Index.signUpContainer}`}>
-            <Formik
-              initialValues={{
-                name: "",
-                email: "",
-                password: "",
-              }}
-              validate={(values) => {
-                const errors: any = {};
-                if (values.name.length <= 3) {
-                  errors.name = "Name must be at least 3 characters.";
-                }
-                if (regExpEmail(values.email)) {
-                  errors.email = "This email address is not valid.";
-                }
-                if (values.password.length <= 6) {
-                  errors.password = "Password must be at least 6 characters.";
-                }
-                return errors;
-              }}
-              onSubmit={(values, { setSubmitting }) => {
-                setTimeout(() => {
-                  handleCreate(values);
-                  setSubmitting(false);
-                }, 400);
-              }}
-            >
-              {({
-                values,
-                errors,
-                touched,
-                handleChange,
-                handleBlur,
-                handleSubmit,
-                isSubmitting,
-              }) => (
-                <form onSubmit={handleSubmit} className={Index.formGlobal}>
-                  <h1 className={Index.h1Global}>Create Account IAM To do</h1>
-                  <div className={Index.socialContainer}>
-                    <a
-                      onClick={() => signIn("iamblockchain")}
-                      className={`${Index.aGlobal} ${Index.social}`}
+        {loading ? (
+          <FadeIn>
+            <div style={{ display: "flex" }}>
+              <Lottie animationData={loadingData} loop autoplay />
+            </div>
+          </FadeIn>
+        ) : (
+          <div
+            className={`${Index.container} ${Index.rightPanelActive}`}
+            id="container"
+          >
+            <div className={`${Index.formContainer} ${Index.signUpContainer}`}>
+              <Formik
+                initialValues={{
+                  name: "",
+                  email: "",
+                  password: "",
+                }}
+                validate={(values) => {
+                  const errors: any = {};
+                  if (regExpName(values.name)) {
+                    errors.name =
+                      "Are you sure you entered your name correctly ?";
+                  }
+                  if (regExpEmail(values.email)) {
+                    errors.email = "This email address is not valid.";
+                  }
+                  if (values.password.length <= 6) {
+                    errors.password = "Password must be at least 6 characters.";
+                  }
+                  return errors;
+                }}
+                onSubmit={(values, { setSubmitting }) => {
+                  setTimeout(() => {
+                    const handleCreate = async (_values: any) => {
+                      const createUser = await fetch("/api/user/create", {
+                        method: "post",
+                        headers: {
+                          "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(_values),
+                      })
+                        .then((response) => response.json())
+                        .then((json) => {
+                          if (json.error) {
+                            Swal.fire({
+                              html: `${json.message}`,
+                              icon: "error",
+                              confirmButtonColor: "#007bff",
+                            });
+                          } else if (json.error == false) {
+                            Swal.fire({
+                              html: `${json.message}`,
+                              icon: "success",
+                              confirmButtonColor: "#007bff",
+                            }).then(() => {
+                              setLoading(true);
+                              setTimeout(async () => {
+                                const res = await signIn("credentials", {
+                                  redirect: true,
+                                  email: values.email,
+                                  password: values.password,
+                                  callbackUrl: `${window.location.origin}`,
+                                });
+                              }, 1000);
+                            });
+                          }
+                        });
+                    };
+
+                    handleCreate(values);
+                    setSubmitting(false);
+                  }, 1000);
+                }}
+              >
+                {({
+                  values,
+                  errors,
+                  touched,
+                  handleChange,
+                  handleBlur,
+                  handleSubmit,
+                  isSubmitting,
+                }) => (
+                  <form onSubmit={handleSubmit} className={Index.formGlobal}>
+                    <h1 className={Index.h1Global}>Create Account IAM To do</h1>
+                    <div className={Index.socialContainer}>
+                      <a
+                        onClick={() => signIn("iamblockchain")}
+                        className={`${Index.aGlobal} ${Index.social}`}
+                      >
+                        <Image
+                          src="/iam.svg"
+                          alt="IAM To do"
+                          width={40}
+                          height={40}
+                        />
+                      </a>
+                      <a
+                        onClick={() => signIn("google")}
+                        className={`${Index.aGlobal} ${Index.social}`}
+                      >
+                        <Image
+                          src="/google.svg"
+                          alt="Google"
+                          width={40}
+                          height={40}
+                        />
+                      </a>
+                      <a
+                        onClick={() => signIn("github")}
+                        className={`${Index.aGlobal} ${Index.social}`}
+                      >
+                        <Image
+                          src="/github.svg"
+                          alt="Github"
+                          width={40}
+                          height={40}
+                        />
+                      </a>
+                    </div>
+                    <span className={Index.spanGlobal}>
+                      or use your email for registration
+                    </span>
+                    <FormControl
+                      mt="2"
+                      mb="1"
+                      isRequired
+                      isInvalid={
+                        errors.name && touched.name && errors.name
+                          ? true
+                          : false
+                      }
                     >
-                      <Image
-                        src="/iam.svg"
-                        alt="IAM To do"
-                        width={40}
-                        height={40}
+                      <Input
+                        id="name"
+                        name="name"
+                        type="text"
+                        className={Index.inputGlobalNewUser}
+                        placeholder="Name"
+                        autoComplete="off"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values.name}
+                        required={true}
+                        autoFocus={false}
                       />
-                    </a>
-                    <a
-                      onClick={() => signIn("google")}
-                      className={`${Index.aGlobal} ${Index.social}`}
+                      {errors.name && touched.name && errors.name ? (
+                        <FormErrorMessage fontSize="xs">
+                          {errors.name}
+                        </FormErrorMessage>
+                      ) : (
+                        ""
+                      )}
+                    </FormControl>
+                    <FormControl
+                      mt="2"
+                      mb="1"
+                      isRequired
+                      isInvalid={
+                        errors.email && touched.email && errors.email
+                          ? true
+                          : false
+                      }
                     >
-                      <Image
-                        src="/google.svg"
-                        alt="Google"
-                        width={40}
-                        height={40}
+                      <Input
+                        id="email"
+                        name="email"
+                        type="email"
+                        className={Index.inputGlobalNewUser}
+                        placeholder="sample@email.com"
+                        autoComplete="off"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values.email}
+                        required={true}
                       />
-                    </a>
-                    <a
-                      onClick={() => signIn("github")}
-                      className={`${Index.aGlobal} ${Index.social}`}
+                      {errors.email && touched.email && errors.email ? (
+                        <FormErrorMessage fontSize="xs">
+                          {errors.email}
+                        </FormErrorMessage>
+                      ) : (
+                        ""
+                      )}
+                    </FormControl>
+                    <FormControl
+                      mt="2"
+                      mb="1"
+                      isRequired
+                      isInvalid={
+                        errors.password && touched.password && errors.password
+                          ? true
+                          : false
+                      }
                     >
-                      <Image
-                        src="/github.svg"
-                        alt="Github"
-                        width={40}
-                        height={40}
+                      <Input
+                        id="password"
+                        name="password"
+                        type="password"
+                        className={Index.inputGlobalNewUser}
+                        placeholder="Password"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values.password}
+                        required={true}
                       />
-                    </a>
+                      {errors.password &&
+                      touched.password &&
+                      errors.password ? (
+                        <FormErrorMessage fontSize="xs">
+                          {errors.password}
+                        </FormErrorMessage>
+                      ) : (
+                        ""
+                      )}
+                    </FormControl>
+                    <button
+                      disabled={isSubmitting}
+                      type="submit"
+                      className={`${Index.buttonGlobal} ${Index.mt2}`}
+                    >
+                      Sign Up
+                    </button>
+                  </form>
+                )}
+              </Formik>
+            </div>
+            <div className={Index.overlayContainer}>
+              <div className={Index.overlay}>
+                <div className={`${Index.overlayPanel} ${Index.overlayLeft}`}>
+                  <div className={`${Index.logo}`}>
+                    <Image
+                      src="/iam.svg"
+                      alt="IAM To do"
+                      width={100}
+                      height={100}
+                    />
                   </div>
-                  <span className={Index.spanGlobal}>
-                    or use your email for registration
-                  </span>
-                  <FormControl
-                    mt="2"
-                    mb="1"
-                    isRequired
-                    isInvalid={
-                      errors.name && touched.name && errors.name ? true : false
-                    }
-                  >
-                    <Input
-                      id="name"
-                      name="name"
-                      type="text"
-                      className={Index.inputGlobalNewUser}
-                      placeholder="Name"
-                      autoComplete="off"
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values.name}
-                      required={true}
-                      autoFocus={false}
-                    />
-                    {errors.name && touched.name && errors.name ? (
-                      <FormErrorMessage fontSize="xs">
-                        {errors.name}
-                      </FormErrorMessage>
-                    ) : (
-                      ""
-                    )}
-                  </FormControl>
-                  <FormControl
-                    mt="2"
-                    mb="1"
-                    isRequired
-                    isInvalid={
-                      errors.email && touched.email && errors.email
-                        ? true
-                        : false
-                    }
-                  >
-                    <Input
-                      id="email"
-                      name="email"
-                      type="email"
-                      className={Index.inputGlobalNewUser}
-                      placeholder="sample@email.com"
-                      autoComplete="off"
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values.email}
-                      required={true}
-                    />
-                    {errors.email && touched.email && errors.email ? (
-                      <FormErrorMessage fontSize="xs">
-                        {errors.email}
-                      </FormErrorMessage>
-                    ) : (
-                      ""
-                    )}
-                  </FormControl>
-                  <FormControl
-                    mt="2"
-                    mb="1"
-                    isRequired
-                    isInvalid={
-                      errors.password && touched.password && errors.password
-                        ? true
-                        : false
-                    }
-                  >
-                    <Input
-                      id="password"
-                      name="password"
-                      type="password"
-                      className={Index.inputGlobalNewUser}
-                      placeholder="Password"
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values.password}
-                      required={true}
-                    />
-                    {errors.password && touched.password && errors.password ? (
-                      <FormErrorMessage fontSize="xs">
-                        {errors.password}
-                      </FormErrorMessage>
-                    ) : (
-                      ""
-                    )}
-                  </FormControl>
-                  <button
-                    disabled={isSubmitting}
-                    type="submit"
-                    className={`${Index.buttonGlobal} ${Index.mt2}`}
-                  >
-                    Sign Up
-                  </button>
-                </form>
-              )}
-            </Formik>
-          </div>
-          <div className={Index.overlayContainer}>
-            <div className={Index.overlay}>
-              <div className={`${Index.overlayPanel} ${Index.overlayLeft}`}>
-                <div className={`${Index.logo}`}>
-                  <Image
-                    src="/iam.svg"
-                    alt="IAM To do"
-                    width={100}
-                    height={100}
-                  />
+                  <h1 className={Index.h1Global}>Welcome Back!</h1>
+                  <p className={Index.pGlobal}>
+                    To keep connected with us please login with your personal
+                    info
+                  </p>
+                  <Link href="/auth/signin" passHref>
+                    <button
+                      className={`${Index.buttonGlobal} ${Index.ghost} `}
+                      id="signIn"
+                      onClick={() => {
+                        signOut({ redirect: false });
+                      }}
+                    >
+                      Sign In
+                    </button>
+                  </Link>
                 </div>
-                <h1 className={Index.h1Global}>Welcome Back!</h1>
-                <p className={Index.pGlobal}>
-                  To keep connected with us please login with your personal info
-                </p>
-                <Link href="/auth/signin" passHref>
-                  <button
-                    className={`${Index.buttonGlobal} ${Index.ghost} `}
-                    id="signIn"
-                    onClick={() => {
-                      signOut({ redirect: false });
-                    }}
-                  >
-                    Sign In
-                  </button>
-                </Link>
               </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </>
   );
 }
-const handleCreate = async (_values: any) => {
-  // Make the API request
-  const createUser = await fetch("/api/user/create", {
-    method: "post",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(_values),
-  });
-  const data = await createUser.json();
-  console.log(data);
-};
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await getToken({ req: context.req });

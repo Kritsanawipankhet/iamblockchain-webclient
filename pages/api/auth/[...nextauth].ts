@@ -107,13 +107,13 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
             throw new Error("No user found with the email");
           }
 
-          // const checkPassword = await compare(
-          //   credentials.password,
-          //   user.password
-          // );
-          // if (!checkPassword) {
-          //   throw new Error("Password doesnt match");
-          // }
+          const checkPassword = await compare(
+            credentials.password,
+            user.password
+          );
+          if (!checkPassword) {
+            throw new Error("Password doesnt match with the user");
+          }
 
           //Incorrect password - send response
 
@@ -139,17 +139,17 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
       strategy: "jwt",
 
       // Seconds - How long until an idle session expires and is no longer valid.
-      maxAge: 30 * 24 * 60 * 60, // 30 days
+      maxAge: 60 * 60, // 30 days
       // maxAge: 24 * 60 * 60,
       // Seconds - Throttle how frequently to write to database to extend a session.
       // Use it to limit write operations. Set to 0 to always update the database.
       // Note: This option is ignored if using JSON Web Tokens
-      //updateAge: 60 * 60, // 24 hours
+      updateAge: 60 * 60, // 24 hours
     },
     pages: {
       signIn: "/auth/signin",
       signOut: "/auth/signout",
-      //error: "/auth/",
+      error: "/auth/signin",
       newUser: "/auth/newuser",
     },
     callbacks: {

@@ -1,9 +1,10 @@
 // This is an example of to protect an API route
 import type { NextApiRequest, NextApiResponse } from "next";
 import { connectMongoDB } from "@/libs/mongoose";
-import { type IUser, User } from "@/models/user.model";
+import { User } from "@/models/user.model";
 import { Account } from "@/models/account.model";
 import { getToken } from "next-auth/jwt";
+import bcrypt from "bcryptjs";
 
 export default async function protectedHandler(
   req: NextApiRequest,
@@ -30,6 +31,7 @@ export default async function protectedHandler(
         const emailCheck = await User.findOne({
           email: _email,
         });
+        let salt = bcrypt.genSaltSync(10);
         if (session.provider === "iamblockchain") {
           if (emailCheck) {
             return res.status(200).json({
@@ -40,7 +42,7 @@ export default async function protectedHandler(
             const updateUser = await User.findByIdAndUpdate(user._id, {
               name: _name,
               email: _email,
-              password: _password,
+              password: bcrypt.hashSync(_password, salt),
             })
               .then((d: any) => {
                 return res.status(200).json({
@@ -60,7 +62,7 @@ export default async function protectedHandler(
           if (user) {
             const updateUser = await User.findByIdAndUpdate(user._id, {
               name: _name,
-              password: _password,
+              password: bcrypt.hashSync(_password, salt),
             })
               .then((d: any) => {
                 return res.status(200).json({

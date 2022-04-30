@@ -3,3 +3,7 @@ export const regExpEmail = (_email: string): boolean => {
     _email
   );
 };
+
+export const regExpName = (_name: string): boolean => {
+  return !/^[a-z0-9\s]+[a-z0-9\s]*$/gi.test(_name);
+};
