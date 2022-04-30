@@ -116,11 +116,11 @@ export default function Signin({ providers, csrfToken, user }: Props) {
                               }, 1000);
                             });
                           }
+                          setSubmitting(false);
                         });
                     };
 
                     handleCreate(values);
-                    setSubmitting(false);
                   }, 1000);
                 }}
               >
@@ -265,13 +265,26 @@ export default function Signin({ providers, csrfToken, user }: Props) {
                         ""
                       )}
                     </FormControl>
-                    <button
+                    <Button
+                      px="24px"
+                      mt="3"
+                      isLoading={isSubmitting}
                       disabled={isSubmitting}
                       type="submit"
-                      className={`${Index.buttonGlobal} ${Index.mt2}`}
+                      loadingText="Signed Up"
+                      color="white"
+                      bg="#007bff"
+                      borderRadius="50"
+                      _hover={{ bg: "#007bff" }}
+                      _active={{
+                        color: "white",
+                        bg: "#007bff",
+                        transform: "scale(0.98)",
+                        borderColor: "#007bff",
+                      }}
                     >
-                      Sign Up
-                    </button>
+                      SIGN UP
+                    </Button>
                   </form>
                 )}
               </Formik>

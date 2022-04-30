@@ -8,7 +8,7 @@ import { GetServerSideProps } from "next";
 import Link from "next/link";
 import Swal from "sweetalert2";
 import { getToken } from "next-auth/jwt";
-import { FormControl, Input, FormErrorMessage } from "@chakra-ui/react";
+import { FormControl, Input, FormErrorMessage, Button } from "@chakra-ui/react";
 import FadeIn from "react-fade-in";
 import Lottie from "lottie-react";
 import * as loadingData from "@/components/loading/loading.json";
@@ -72,6 +72,7 @@ export default function Signin({ providers, csrfToken }: Props) {
                   return errors;
                 }}
                 onSubmit={(values, { setSubmitting }) => {
+                  setSubmitting(true);
                   setTimeout(async () => {
                     const res = await signIn("credentials", {
                       redirect: false,
@@ -98,10 +99,9 @@ export default function Signin({ providers, csrfToken }: Props) {
                           router.push("/");
                         }, 1000);
                       }
+                      setSubmitting(false);
                     });
-
-                    setSubmitting(false);
-                  }, 400);
+                  }, 1000);
                 }}
               >
                 {({
@@ -220,13 +220,25 @@ export default function Signin({ providers, csrfToken }: Props) {
                     <a href="#" className={`${Index.aGlobal}`}>
                       Forgot your password?
                     </a>
-                    <button
+                    <Button
+                      isLoading={isSubmitting}
+                      px="24px"
                       disabled={isSubmitting}
                       type="submit"
-                      className={`${Index.buttonGlobal} ${Index.mt2}`}
+                      loadingText="Signed In"
+                      color="white"
+                      bg="#007bff"
+                      borderRadius="50"
+                      _hover={{ bg: "#007bff" }}
+                      _active={{
+                        color: "white",
+                        bg: "#007bff",
+                        transform: "scale(0.98)",
+                        borderColor: "#007bff",
+                      }}
                     >
-                      Sign In
-                    </button>
+                      SIGN IN
+                    </Button>
                   </form>
                 )}
               </Formik>

@@ -35,7 +35,8 @@ export default async function protectedHandler(
         if (session.provider === "iamblockchain") {
           if (emailCheck) {
             return res.status(200).json({
-              message: "This email is already used.",
+              message:
+                "This email is already used.<br><small>Please use a different email address that is not in use.</small>",
               error: "EMAIL_USED",
             });
           } else {
