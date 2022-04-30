@@ -147,10 +147,10 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
       //updateAge: 60 * 60, // 24 hours
     },
     pages: {
-      signIn: "/auth/",
+      signIn: "/auth/signin",
       signOut: "/auth/signout",
-      error: "/auth/",
-      newUser: "/auth/?signUp=true",
+      //error: "/auth/",
+      newUser: "/auth/newuser",
     },
     callbacks: {
       async jwt({ token, user, account, isNewUser, profile }) {
@@ -158,11 +158,14 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
 
         if (account) {
           token.accessToken = account.access_token;
+          token.provider = account.provider;
         }
         return token;
       },
       async session({ session, user, token }) {
-        return session;
+        // @ts-ignore
+        session.user.provider = token.provider;
+        return Promise.resolve(session);
       },
       async signIn({ user, account, profile, email, credentials }) {
         return Promise.resolve(true);

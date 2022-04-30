@@ -3,7 +3,7 @@ import Head from "next/head";
 import { GetServerSideProps } from "next";
 // import { connect } from "../libs/mongoose";
 import type { Session } from "next-auth";
-import { useSession, getSession } from "next-auth/react";
+import { getToken } from "next-auth/jwt";
 import { useRouter, type NextRouter } from "next/router";
 import { signOut } from "next-auth/react";
 import Index from "@/styles/todo.module.css";
@@ -39,11 +39,19 @@ import {
   Tooltip,
 } from "@chakra-ui/react";
 import { AddIcon, SmallCloseIcon, EditIcon } from "@chakra-ui/icons";
+import { User } from "@/models/user.model";
+import { connectMongoDB } from "@/libs/mongoose";
 const activeLabelStyles = {
   transform: "scale(0.85) translateY(-24px)",
 };
 
-type Props = {};
+type Props = {
+  user: {
+    email: string;
+    name: string;
+    provider: string;
+  };
+};
 declare let document: any;
 let router: NextRouter;
 
@@ -60,7 +68,7 @@ const scrollbarStyle = {
   },
 };
 
-export default function Home({}: Props) {
+export default function Home({ user }: Props) {
   router = useRouter();
   const {
     isOpen: isEditOpen,
@@ -109,12 +117,8 @@ export default function Home({}: Props) {
                     />
                   </div>
 
-                  <p className={Index.profileName}>
-                    Hello, Kritsana Wipankhet !
-                  </p>
-                  <p className={Index.profileEmail}>
-                    kritsanawipankhet@icloud.com
-                  </p>
+                  <p className={Index.profileName}>Hello, {user.name} !</p>
+                  <p className={Index.profileEmail}>{user.email}</p>
                 </div>
 
                 <div className={Index.settingContent}>
@@ -375,13 +379,26 @@ export default function Home({}: Props) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const session = await getSession({ req: context.req });
-  if (!session) {
-    return { redirect: { destination: "/auth", permanent: false } };
+  const session = await getToken({ req: context.req });
+  if (session) {
+    const { connect } = await connectMongoDB();
+    const getUserId = await User.findById(session.sub);
+    if (getUserId) {
+      if (getUserId.email && getUserId.name) {
+        return {
+          props: { user: { email: getUserId.email, name: getUserId.name } },
+        };
+      } else {
+        return {
+          redirect: { destination: "/auth/newuser", permanent: false },
+        };
+      }
+    } else {
+      return { redirect: { destination: "/auth/signin", permanent: false } };
+    }
+  } else {
+    return { redirect: { destination: "/auth/signin", permanent: false } };
   }
-  //const { conn } = await connect();
-  // console.log(conn);
-  return { props: {} };
 };
 
 {
