@@ -80,6 +80,7 @@ export default function Home({ user }: Props) {
   const [todoCurrentId, setTodoCurrentId] = useState("");
   const [todoCurrentContent, setTodoCurrentContent] = useState("");
   const [addLodding, setAddLoading] = useState(false);
+  const [checkboxDisable, setCheckboxDisable] = useState(false);
   const {
     isOpen: isEditOpen,
     onOpen: onEditOpen,
@@ -120,7 +121,10 @@ export default function Home({ user }: Props) {
     })
       .then((response) => response.json())
       .then((json) => {
-        console.log(json);
+        setTimeout(() => {
+          setCheckboxDisable(false);
+          console.log(json);
+        }, 400);
       });
   };
   return (
@@ -322,7 +326,9 @@ export default function Home({ user }: Props) {
                                         id={e._id}
                                         defaultChecked={e.active}
                                         isChecked={e.active}
+                                        disabled={checkboxDisable}
                                         onChange={(event) => {
+                                          setCheckboxDisable(true);
                                           handleActive(
                                             e._id,
                                             event.target.checked
@@ -401,7 +407,9 @@ export default function Home({ user }: Props) {
                                           id={e._id}
                                           defaultChecked={e.active}
                                           isChecked={e.active}
+                                          disabled={checkboxDisable}
                                           onChange={(event) => {
+                                            setCheckboxDisable(true);
                                             handleActive(
                                               e._id,
                                               event.target.checked
@@ -482,7 +490,9 @@ export default function Home({ user }: Props) {
                                           id={e._id}
                                           defaultChecked={e.active}
                                           isChecked={e.active}
+                                          disabled={checkboxDisable}
                                           onChange={(event) => {
+                                            setCheckboxDisable(true);
                                             handleActive(
                                               e._id,
                                               event.target.checked
