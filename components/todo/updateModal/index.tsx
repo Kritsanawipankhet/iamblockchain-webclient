@@ -152,7 +152,7 @@ export default function UpdateModal({
                   >
                     Save
                   </Button>
-                  <Button disabled={btnDisabled} onClick={onClose}>
+                  <Button disabled={isSubmitting} onClick={onClose}>
                     Cancel
                   </Button>
                 </ModalFooter>

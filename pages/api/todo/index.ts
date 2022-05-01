@@ -19,7 +19,7 @@ export default async function protectedHandler(
       const { connect } = await connectMongoDB();
       const todos = await Todo.find({
         userId: session?.sub,
-      });
+      }).sort({ updated_at: "desc" });
 
       return res.status(200).json(todos);
     } catch (e: any) {

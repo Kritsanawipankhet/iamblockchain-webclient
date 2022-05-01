@@ -109,6 +109,20 @@ export default function Home({ user }: Props) {
     };
     fetchData();
   }, [todos]);
+
+  const handleActive = async (_id: string, _check: boolean) => {
+    const activeTodo = await fetch("/api/todo/check/", {
+      method: "put",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ todoId: _id, active: _check }),
+    })
+      .then((response) => response.json())
+      .then((json) => {
+        console.log(json);
+      });
+  };
   return (
     <>
       <Head>
@@ -191,9 +205,11 @@ export default function Home({ user }: Props) {
                           })
                             .then((response) => response.json())
                             .then((json) => {
-                              values.todoContent = "";
-                              setAddLoading(false);
-                              console.log(json);
+                              setTimeout(() => {
+                                values.todoContent = "";
+                                setAddLoading(false);
+                                //console.log(json);
+                              }, 500);
                             });
                         };
                         handleCreate(values);
@@ -305,9 +321,13 @@ export default function Home({ user }: Props) {
                                       <Checkbox
                                         id={e._id}
                                         defaultChecked={e.active}
-                                        onChange={(event) =>
-                                          event.target.checked
-                                        }
+                                        isChecked={e.active}
+                                        onChange={(event) => {
+                                          handleActive(
+                                            e._id,
+                                            event.target.checked
+                                          );
+                                        }}
                                       />
                                       <Text
                                         fontSize="16px"
@@ -369,64 +389,79 @@ export default function Home({ user }: Props) {
                           css={scrollbarStyle}
                         >
                           <List spacing={3} fontSize="14px" fontWeight={300}>
-                            {todos
-                              .filter((f: any) => f.active == false)
-                              .map((e: any, index: number) => (
-                                <Box key={e._id}>
-                                  <ListItem mb="3">
-                                    <Flex gap={3} align="center">
-                                      <Checkbox
-                                        id={e._id}
-                                        defaultChecked={e.active}
-                                        onChange={(event) =>
-                                          event.target.checked
-                                        }
-                                      />
-                                      <Text
-                                        fontSize="16px"
-                                        as={e.active ? "del" : "data"}
-                                      >
-                                        {e.content}
-                                      </Text>
-                                      <Spacer />
-                                      <HStack>
-                                        <Tooltip
-                                          label="Edit"
-                                          placement="top-start"
+                            {todos.filter((l: any) => l.active == false)
+                              .length > 0 ? (
+                              todos
+                                .filter((f: any) => f.active == false)
+                                .map((e: any, index: number) => (
+                                  <Box key={e._id}>
+                                    <ListItem mb="3">
+                                      <Flex gap={3} align="center">
+                                        <Checkbox
+                                          id={e._id}
+                                          defaultChecked={e.active}
+                                          isChecked={e.active}
+                                          onChange={(event) => {
+                                            handleActive(
+                                              e._id,
+                                              event.target.checked
+                                            );
+                                          }}
+                                        />
+                                        <Text
+                                          fontSize="16px"
+                                          as={e.active ? "del" : "data"}
                                         >
-                                          <IconButton
-                                            variant="outline"
-                                            aria-label="Edit"
-                                            size="xs"
-                                            icon={<EditIcon />}
-                                            onClick={() => {
-                                              setTodoCurrentId(e._id);
-                                              setTodoCurrentContent(e.content);
-                                              onEditOpen();
-                                            }}
-                                          />
-                                        </Tooltip>
-                                        <Tooltip
-                                          label="Delete"
-                                          placement="top-start"
-                                        >
-                                          <IconButton
-                                            variant="outline"
-                                            aria-label="Delete"
-                                            size="xs"
-                                            icon={<SmallCloseIcon />}
-                                            onClick={() => {
-                                              setTodoCurrentId(e._id);
-                                              onDelOpen();
-                                            }}
-                                          />
-                                        </Tooltip>
-                                      </HStack>
-                                    </Flex>
-                                  </ListItem>
-                                  <Divider />
-                                </Box>
-                              ))}
+                                          {e.content}
+                                        </Text>
+                                        <Spacer />
+                                        <HStack>
+                                          <Tooltip
+                                            label="Edit"
+                                            placement="top-start"
+                                          >
+                                            <IconButton
+                                              variant="outline"
+                                              aria-label="Edit"
+                                              size="xs"
+                                              icon={<EditIcon />}
+                                              onClick={() => {
+                                                setTodoCurrentId(e._id);
+                                                setTodoCurrentContent(
+                                                  e.content
+                                                );
+                                                onEditOpen();
+                                              }}
+                                            />
+                                          </Tooltip>
+                                          <Tooltip
+                                            label="Delete"
+                                            placement="top-start"
+                                          >
+                                            <IconButton
+                                              variant="outline"
+                                              aria-label="Delete"
+                                              size="xs"
+                                              icon={<SmallCloseIcon />}
+                                              onClick={() => {
+                                                setTodoCurrentId(e._id);
+                                                onDelOpen();
+                                              }}
+                                            />
+                                          </Tooltip>
+                                        </HStack>
+                                      </Flex>
+                                    </ListItem>
+                                    <Divider />
+                                  </Box>
+                                ))
+                            ) : (
+                              <ListItem>
+                                <Flex gap={3} align="center" justify="center">
+                                  <Text>There is no active to-do list.</Text>
+                                </Flex>
+                              </ListItem>
+                            )}
                           </List>
                         </TabPanel>
                         <TabPanel
@@ -435,64 +470,79 @@ export default function Home({ user }: Props) {
                           css={scrollbarStyle}
                         >
                           <List spacing={3} fontSize="14px" fontWeight={300}>
-                            {todos
-                              .filter((f: any) => f.active == true)
-                              .map((e: any, index: number) => (
-                                <Box key={e._id}>
-                                  <ListItem mb="3">
-                                    <Flex gap={3} align="center">
-                                      <Checkbox
-                                        id={e._id}
-                                        defaultChecked={e.active}
-                                        onChange={(event) =>
-                                          event.target.checked
-                                        }
-                                      />
-                                      <Text
-                                        fontSize="16px"
-                                        as={e.active ? "del" : "data"}
-                                      >
-                                        {e.content}
-                                      </Text>
-                                      <Spacer />
-                                      <HStack>
-                                        <Tooltip
-                                          label="Edit"
-                                          placement="top-start"
+                            {todos.filter((l: any) => l.active == true).length >
+                            0 ? (
+                              todos
+                                .filter((f: any) => f.active == true)
+                                .map((e: any, index: number) => (
+                                  <Box key={e._id}>
+                                    <ListItem mb="3">
+                                      <Flex gap={3} align="center">
+                                        <Checkbox
+                                          id={e._id}
+                                          defaultChecked={e.active}
+                                          isChecked={e.active}
+                                          onChange={(event) => {
+                                            handleActive(
+                                              e._id,
+                                              event.target.checked
+                                            );
+                                          }}
+                                        />
+                                        <Text
+                                          fontSize="16px"
+                                          as={e.active ? "del" : "data"}
                                         >
-                                          <IconButton
-                                            variant="outline"
-                                            aria-label="Edit"
-                                            size="xs"
-                                            icon={<EditIcon />}
-                                            onClick={() => {
-                                              setTodoCurrentId(e._id);
-                                              setTodoCurrentContent(e.content);
-                                              onEditOpen();
-                                            }}
-                                          />
-                                        </Tooltip>
-                                        <Tooltip
-                                          label="Delete"
-                                          placement="top-start"
-                                        >
-                                          <IconButton
-                                            variant="outline"
-                                            aria-label="Delete"
-                                            size="xs"
-                                            icon={<SmallCloseIcon />}
-                                            onClick={() => {
-                                              setTodoCurrentId(e._id);
-                                              onDelOpen();
-                                            }}
-                                          />
-                                        </Tooltip>
-                                      </HStack>
-                                    </Flex>
-                                  </ListItem>
-                                  <Divider />
-                                </Box>
-                              ))}
+                                          {e.content}
+                                        </Text>
+                                        <Spacer />
+                                        <HStack>
+                                          <Tooltip
+                                            label="Edit"
+                                            placement="top-start"
+                                          >
+                                            <IconButton
+                                              variant="outline"
+                                              aria-label="Edit"
+                                              size="xs"
+                                              icon={<EditIcon />}
+                                              onClick={() => {
+                                                setTodoCurrentId(e._id);
+                                                setTodoCurrentContent(
+                                                  e.content
+                                                );
+                                                onEditOpen();
+                                              }}
+                                            />
+                                          </Tooltip>
+                                          <Tooltip
+                                            label="Delete"
+                                            placement="top-start"
+                                          >
+                                            <IconButton
+                                              variant="outline"
+                                              aria-label="Delete"
+                                              size="xs"
+                                              icon={<SmallCloseIcon />}
+                                              onClick={() => {
+                                                setTodoCurrentId(e._id);
+                                                onDelOpen();
+                                              }}
+                                            />
+                                          </Tooltip>
+                                        </HStack>
+                                      </Flex>
+                                    </ListItem>
+                                    <Divider />
+                                  </Box>
+                                ))
+                            ) : (
+                              <ListItem>
+                                <Flex gap={3} align="center" justify="center">
+                                  <Text>There is no completed to-do list.</Text>
+                                </Flex>
+                              </ListItem>
+                            )}
                           </List>
                         </TabPanel>
                       </TabPanels>
