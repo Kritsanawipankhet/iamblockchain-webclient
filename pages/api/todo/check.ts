@@ -17,11 +17,11 @@ export default async function protectedHandler(
     });
     try {
       const { connect } = await connectMongoDB();
-      const { content: _content, todoId: _todoId } = req.body;
-      const updateTodo = await Todo.findByIdAndUpdate(_todoId, {
-        content: _content,
+      const { active: _active, todoId: _todoId } = req.body;
+      const checkTodo = await Todo.findByIdAndUpdate(_todoId, {
+        active: _active,
       });
-      if (updateTodo) {
+      if (checkTodo) {
         return res
           .status(200)
           .json({ error: false, message: "Update todo-list success." });

@@ -10,15 +10,15 @@ export default async function protectedHandler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  console.log(req.body);
-  if (req.method === "POST") {
+  //console.log(req.body);
+  if (req.method === "PUT") {
     const session = await getToken({
       req: req,
       secret: process.env.NEXTAUTH_SECRET,
     });
 
-    const { connect } = await connectMongoDB();
     try {
+      const { connect } = await connectMongoDB();
       const { name: _name, email: _email, password: _password } = req.body;
 
       if (session) {

@@ -16,9 +16,32 @@ type Props = {
   isOpen: boolean;
   onClose: () => void;
   cancelRef?: React.RefObject<HTMLInputElement>;
+  todoId: string;
 };
 
-export default function DeleteModal({ isOpen, onClose, cancelRef }: Props) {
+export default function DeleteModal({
+  isOpen,
+  onClose,
+  cancelRef,
+  todoId,
+}: Props) {
+  const [btnDisabled, setBtnDisabled] = useState(false);
+  const handleDelete = async (_id: string) => {
+    const deleteTodo = await fetch("/api/todo/delete/", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ todoId: _id }),
+    })
+      .then((response) => response.json())
+      .then((json) => {
+        setTimeout(() => {
+          onClose();
+          setBtnDisabled(false);
+        }, 500);
+      });
+  };
   return (
     <>
       <AlertDialog
@@ -26,6 +49,7 @@ export default function DeleteModal({ isOpen, onClose, cancelRef }: Props) {
         leastDestructiveRef={cancelRef}
         onClose={onClose}
         isCentered
+        closeOnOverlayClick={!btnDisabled}
       >
         <AlertDialogOverlay>
           <AlertDialogContent>
@@ -38,8 +62,20 @@ export default function DeleteModal({ isOpen, onClose, cancelRef }: Props) {
             </AlertDialogBody>
 
             <AlertDialogFooter>
-              <Button onClick={onClose}>Cancel</Button>
-              <Button colorScheme="red" onClick={onClose} ml={3}>
+              <Button disabled={btnDisabled} onClick={onClose}>
+                Cancel
+              </Button>
+              <Button
+                isLoading={btnDisabled}
+                colorScheme="red"
+                loadingText="DELETING"
+                onClick={() => {
+                  setBtnDisabled(true);
+                  handleDelete(todoId);
+                }}
+                ml={3}
+                disabled={btnDisabled}
+              >
                 Delete
               </Button>
             </AlertDialogFooter>

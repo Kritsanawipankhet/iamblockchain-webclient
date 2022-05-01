@@ -19,16 +19,22 @@ import {
   FormErrorMessage,
   extendTheme,
 } from "@chakra-ui/react";
+import { Formik } from "formik";
 
 type Props = {
   isOpen: boolean;
   onClose: () => void;
+  todoId: string;
+  todoContent: string;
 };
 
-export default function UpdateModal({ isOpen, onClose }: Props) {
-  const [todo, setTodo] = useState(
-    "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Perferendis."
-  );
+export default function UpdateModal({
+  isOpen,
+  onClose,
+  todoId,
+  todoContent,
+}: Props) {
+  const [btnDisabled, setBtnDisabled] = useState(false);
   const initialRef: any = React.useRef();
 
   return (
@@ -38,41 +44,121 @@ export default function UpdateModal({ isOpen, onClose }: Props) {
         isOpen={isOpen}
         onClose={onClose}
         isCentered
+        closeOnOverlayClick={!btnDisabled}
       >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Edit To do List</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody pb={6}>
-            <ChakraProvider theme={theme}>
-              <FormControl
-                variant="floating"
-                id="content"
-                // isRequired
-                // isInvalid
-              >
-                <Input
-                  ref={initialRef}
-                  placeholder=" "
-                  value={todo}
-                  onChange={(e) => {
-                    setTodo(e.target.value);
-                  }}
-                />
-                {/* It is important that the Label comes after the Control due to css selectors */}
-                <FormLabel>What would you like to change?</FormLabel>
-                {/* <FormHelperText>Keep it very short and sweet!</FormHelperText>
-                <FormErrorMessage>Your First name is invalid</FormErrorMessage> */}
-              </FormControl>
-            </ChakraProvider>
-          </ModalBody>
+          <Formik
+            initialValues={{
+              todoId: todoId,
+              todoContent: todoContent,
+            }}
+            validate={(values) => {
+              const errors: any = {};
+              if (values.todoContent.length < 2) {
+                errors.todoContent = "Content todo-list too short.";
+              }
+              return errors;
+            }}
+            onSubmit={(values, { setSubmitting }) => {
+              setSubmitting(true);
+              setBtnDisabled(true);
+              const handleUpdate = async (_values: any) => {
+                //console.log(values.todoId);
+                const updateTodo = await fetch("/api/todo/edit/", {
+                  method: "PUT",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    todoId: _values.todoId,
+                    content: _values.todoContent,
+                  }),
+                })
+                  .then((response) => response.json())
+                  .then((json) => {
+                    setTimeout(() => {
+                      onClose();
+                      setSubmitting(true);
+                      setBtnDisabled(true);
+                    }, 1000);
+                  });
+              };
+              handleUpdate(values);
+            }}
+          >
+            {({
+              values,
+              errors,
+              touched,
+              handleChange,
+              handleBlur,
+              handleSubmit,
+              isSubmitting,
+            }) => (
+              <form onSubmit={handleSubmit}>
+                <ModalHeader>Edit To do List </ModalHeader>
+                <ModalCloseButton />
+                <ModalBody pb={6}>
+                  <ChakraProvider theme={theme}>
+                    <FormControl
+                      variant="floating"
+                      id="content"
+                      isInvalid={
+                        errors.todoContent &&
+                        touched.todoContent &&
+                        errors.todoContent
+                          ? true
+                          : false
+                      }
+                    >
+                      <Input
+                        id="todoContent"
+                        name="todoContent"
+                        type="text"
+                        ref={initialRef}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values.todoContent}
+                        disabled={isSubmitting}
+                        placeholder=" "
+                        autoComplete="off"
+                        required={true}
+                      />
+                      {/* It is important that the Label comes after the Control due to css selectors */}
+                      <FormLabel>What would you like to change?</FormLabel>
 
-          <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
-              Save
-            </Button>
-            <Button onClick={onClose}>Cancel</Button>
-          </ModalFooter>
+                      {errors.todoContent &&
+                      touched.todoContent &&
+                      errors.todoContent ? (
+                        <FormErrorMessage fontSize="xs">
+                          {errors.todoContent}
+                        </FormErrorMessage>
+                      ) : (
+                        ""
+                      )}
+                    </FormControl>
+                  </ChakraProvider>
+                </ModalBody>
+
+                <ModalFooter>
+                  <Button
+                    type="submit"
+                    loadingText="EDITING"
+                    isLoading={isSubmitting}
+                    disabled={isSubmitting}
+                    colorScheme="blue"
+                    mr={3}
+                  >
+                    Save
+                  </Button>
+                  <Button disabled={btnDisabled} onClick={onClose}>
+                    Cancel
+                  </Button>
+                </ModalFooter>
+              </form>
+            )}
+          </Formik>
         </ModalContent>
       </Modal>
     </>

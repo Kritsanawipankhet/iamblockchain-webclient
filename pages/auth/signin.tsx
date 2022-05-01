@@ -38,6 +38,8 @@ export default function Signin({ providers, csrfToken }: Props) {
       html: "Can't connect to the provider you need. <br><small>Because the email is already used or tied to another service provider. If you want to connect to this email You must log in and connect again.</small>",
       icon: "error",
       confirmButtonColor: "#007bff",
+    }).then(() => {
+      router.push("/");
     });
   }
 

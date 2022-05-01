@@ -7,7 +7,7 @@ import type { Session } from "next-auth";
 import { useSession, getSession } from "next-auth/react";
 import { getProviders, signIn, getCsrfToken, signOut } from "next-auth/react";
 import { Formik } from "formik";
-import { FormControl, Input, FormErrorMessage } from "@chakra-ui/react";
+import { FormControl, Input, FormErrorMessage, Button } from "@chakra-ui/react";
 import { GetServerSideProps } from "next";
 import Link from "next/link";
 import Swal from "sweetalert2";
@@ -81,7 +81,7 @@ export default function Signin({ providers, csrfToken, user }: Props) {
                     const handleUpdate = async (_values: any) => {
                       // Make the API request
                       const updateUser = await fetch("/api/user/update", {
-                        method: "post",
+                        method: "PUT",
                         headers: {
                           "Content-Type": "application/json",
                         },
@@ -94,6 +94,8 @@ export default function Signin({ providers, csrfToken, user }: Props) {
                               html: `${json.message}`,
                               icon: "error",
                               confirmButtonColor: "#007bff",
+                            }).then(() => {
+                              setSubmitting(false);
                             });
                           } else if (json.error == false) {
                             Swal.fire({
@@ -110,8 +112,6 @@ export default function Signin({ providers, csrfToken, user }: Props) {
                         });
                     };
                     handleUpdate(values);
-
-                    setSubmitting(false);
                   }, 400);
                 }}
               >
@@ -255,13 +255,26 @@ export default function Signin({ providers, csrfToken, user }: Props) {
                         ""
                       )}
                     </FormControl>
-                    <button
-                      type="submit"
-                      className={`${Index.buttonGlobal} ${Index.mt2}`}
+                    <Button
+                      px="24px"
+                      mt="3"
+                      isLoading={isSubmitting}
                       disabled={isSubmitting}
+                      type="submit"
+                      loadingText="STARTING"
+                      color="white"
+                      bg="#007bff"
+                      borderRadius="50"
+                      _hover={{ bg: "#007bff" }}
+                      _active={{
+                        color: "white",
+                        bg: "#007bff",
+                        transform: "scale(0.98)",
+                        borderColor: "#007bff",
+                      }}
                     >
-                      Let&lsquo;s Start !
-                    </button>
+                      LET&lsquo;S START !
+                    </Button>
                   </form>
                 )}
               </Formik>
