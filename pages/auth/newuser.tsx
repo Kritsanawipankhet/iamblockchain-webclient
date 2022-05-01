@@ -78,6 +78,7 @@ export default function Signin({ providers, csrfToken, user }: Props) {
                   return errors;
                 }}
                 onSubmit={(values, { setSubmitting }) => {
+                  setBtnDisabled(true);
                   setTimeout(async () => {
                     const handleUpdate = async (_values: any) => {
                       // Make the API request
@@ -96,6 +97,7 @@ export default function Signin({ providers, csrfToken, user }: Props) {
                               icon: "error",
                               confirmButtonColor: "#007bff",
                             }).then(() => {
+                              setBtnDisabled(false);
                               setSubmitting(false);
                             });
                           } else if (json.error == false) {
@@ -104,6 +106,7 @@ export default function Signin({ providers, csrfToken, user }: Props) {
                               icon: "success",
                               confirmButtonColor: "#007bff",
                             }).then(() => {
+                              setBtnDisabled(false);
                               setLoading(true);
                               setTimeout(async () => {
                                 router.push("/");
