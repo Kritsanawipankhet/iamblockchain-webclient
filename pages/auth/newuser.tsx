@@ -349,23 +349,16 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
           },
         };
       } else {
+        await signOut();
         return { redirect: { destination: "/auth/signin", permanent: false } };
       }
     } else {
-      return {
-        props: {
-          providers: await getProviders(),
-          csrfToken: await getCsrfToken(context),
-          user: { provider: provider },
-        },
-      };
+      await signOut();
+      return { redirect: { destination: "/auth/signin", permanent: false } };
     }
   } else {
     return {
-      props: {
-        providers: await getProviders(),
-        csrfToken: await getCsrfToken(context),
-      },
+      redirect: { destination: "/auth/signin", permanent: false },
     };
   }
 };
