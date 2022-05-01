@@ -184,6 +184,7 @@ export default function Signin({ providers, csrfToken, user }: Props) {
                       }
                     >
                       <Input
+                        disabled={isSubmitting}
                         id="name"
                         name="name"
                         type="text"
@@ -215,6 +216,7 @@ export default function Signin({ providers, csrfToken, user }: Props) {
                       }
                     >
                       <Input
+                        disabled={isSubmitting}
                         id="email"
                         name="email"
                         type="email"
@@ -245,6 +247,7 @@ export default function Signin({ providers, csrfToken, user }: Props) {
                       }
                     >
                       <Input
+                        disabled={isSubmitting}
                         id="password"
                         name="password"
                         type="password"

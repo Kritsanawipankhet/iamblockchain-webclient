@@ -123,7 +123,7 @@ export default function Home({ user }: Props) {
       .then((json) => {
         setTimeout(() => {
           setCheckboxDisable(false);
-          console.log(json);
+          // console.log(json);
         }, 400);
       });
   };

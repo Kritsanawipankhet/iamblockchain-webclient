@@ -173,6 +173,7 @@ export default function Signin({ providers, csrfToken, user }: Props) {
                       }
                     >
                       <Input
+                        disabled={isSubmitting}
                         id="name"
                         name="name"
                         type="text"
@@ -210,6 +211,7 @@ export default function Signin({ providers, csrfToken, user }: Props) {
                         className={Index.inputGlobalNewUser}
                         placeholder="sample@email.com"
                         autoComplete="off"
+                        disabled={isSubmitting}
                         onChange={handleChange}
                         onBlur={handleBlur}
                         value={values.email}
@@ -235,6 +237,7 @@ export default function Signin({ providers, csrfToken, user }: Props) {
                       }
                     >
                       <Input
+                        disabled={isSubmitting}
                         id="password"
                         name="password"
                         type="password"

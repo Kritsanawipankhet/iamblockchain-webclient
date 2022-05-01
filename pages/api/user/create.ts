@@ -27,7 +27,7 @@ export default async function protectedHandler(
 
         const createUser = await User.create({
           name: _name,
-          email: _email,
+          email: _email.toLowerCase(),
           password: bcrypt.hashSync(_password, salt),
           emailVerified: null,
         })

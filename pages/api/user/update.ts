@@ -42,7 +42,7 @@ export default async function protectedHandler(
           } else {
             const updateUser = await User.findByIdAndUpdate(user._id, {
               name: _name,
-              email: _email,
+              email: _email.toLowerCase(),
               password: bcrypt.hashSync(_password, salt),
             })
               .then((d: any) => {
