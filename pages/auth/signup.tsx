@@ -42,6 +42,7 @@ type Props = {
 export default function Signin({ providers, csrfToken, user }: Props) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [btnDisabled, setBtnDisabled] = useState(false);
 
   return (
     <>
@@ -82,6 +83,7 @@ export default function Signin({ providers, csrfToken, user }: Props) {
                   return errors;
                 }}
                 onSubmit={(values, { setSubmitting }) => {
+                  setBtnDisabled(true);
                   setTimeout(() => {
                     const handleCreate = async (_values: any) => {
                       const createUser = await fetch("/api/user/create", {
@@ -105,6 +107,7 @@ export default function Signin({ providers, csrfToken, user }: Props) {
                               icon: "success",
                               confirmButtonColor: "#007bff",
                             }).then(() => {
+                              setBtnDisabled(false);
                               setLoading(true);
                               setTimeout(async () => {
                                 const res = await signIn("credentials", {
@@ -310,6 +313,7 @@ export default function Signin({ providers, csrfToken, user }: Props) {
                   </p>
                   <Link href="/auth/signin" passHref>
                     <button
+                      disabled={btnDisabled}
                       className={`${Index.buttonGlobal} ${Index.ghost} `}
                       id="signIn"
                       onClick={() => {

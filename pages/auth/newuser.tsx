@@ -31,14 +31,14 @@ type Props = {
   user: {
     email?: string;
     name?: string;
-    provider: string;
+    provider?: string;
   };
 };
 
 export default function Signin({ providers, csrfToken, user }: Props) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-
+  const [btnDisabled, setBtnDisabled] = useState(false);
   return (
     <>
       <Head>
@@ -216,7 +216,7 @@ export default function Signin({ providers, csrfToken, user }: Props) {
                         onChange={handleChange}
                         onBlur={handleBlur}
                         value={values.email}
-                        readOnly={user.email ? true : false}
+                        readOnly={values.email ? true : false}
                         required={true}
                       />
                       {errors.email && touched.email && errors.email ? (
@@ -301,6 +301,7 @@ export default function Signin({ providers, csrfToken, user }: Props) {
                   </p>
                   <Link href="/auth/signin" passHref>
                     <button
+                      disabled={btnDisabled}
                       className={`${Index.buttonGlobal} ${Index.ghost} `}
                       id="signIn"
                       onClick={() => {
@@ -345,7 +346,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
           },
         };
       } else {
-        await signOut();
         return { redirect: { destination: "/auth/signin", permanent: false } };
       }
     } else {
