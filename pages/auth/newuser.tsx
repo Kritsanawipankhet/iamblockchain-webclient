@@ -15,6 +15,7 @@ import { regExpEmail, regExpName } from "@/libs/regex";
 import FadeIn from "react-fade-in";
 import Lottie from "lottie-react";
 import * as loadingData from "@/components/loading/loading.json";
+import { getToken } from "next-auth/jwt";
 
 type Props = {
   providers: [
@@ -320,22 +321,27 @@ export default function Signin({ providers, csrfToken, user }: Props) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const session = await getSession({ req: context.req });
+  const session = await getToken({ req: context.req });
 
   if (session) {
     // @ts-ignore
-    const provider = session.user.provider;
-    if (session.user?.email) {
-      if (
-        provider === "google" ||
-        provider === "github" ||
-        provider === "iamblockchain"
-      ) {
+    console.log(session);
+    const provider = session.provider;
+    if (session.sub) {
+      if (provider === "google" || provider === "github") {
         return {
           props: {
             providers: await getProviders(),
             csrfToken: await getCsrfToken(context),
-            user: { email: session.user?.email, provider: provider },
+            user: { email: session.email, provider: provider },
+          },
+        };
+      } else if (provider === "iamblockchain") {
+        return {
+          props: {
+            providers: await getProviders(),
+            csrfToken: await getCsrfToken(context),
+            user: { provider: provider },
           },
         };
       } else {
