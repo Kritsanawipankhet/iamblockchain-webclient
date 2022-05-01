@@ -381,11 +381,11 @@ export default function Home({ user }: Props) {
                                 </Box>
                               ))
                             ) : (
-                              <ListItem>
-                                <Flex gap={3} align="center" justify="center">
-                                  <Text>There is no to-do list.</Text>
-                                </Flex>
-                              </ListItem>
+                              <Box w="100%">
+                                <Text align="center">
+                                  There is no to-do list.
+                                </Text>
+                              </Box>
                             )}
                           </List>
                         </TabPanel>
@@ -464,11 +464,11 @@ export default function Home({ user }: Props) {
                                   </Box>
                                 ))
                             ) : (
-                              <ListItem>
-                                <Flex gap={3} align="center" justify="center">
-                                  <Text>There is no active to-do list.</Text>
-                                </Flex>
-                              </ListItem>
+                              <Box w="100%">
+                                <Text align="center">
+                                  There is no active to-do list.
+                                </Text>
+                              </Box>
                             )}
                           </List>
                         </TabPanel>
@@ -547,11 +547,11 @@ export default function Home({ user }: Props) {
                                   </Box>
                                 ))
                             ) : (
-                              <ListItem>
-                                <Flex gap={3} align="center" justify="center">
-                                  <Text>There is no completed to-do list.</Text>
-                                </Flex>
-                              </ListItem>
+                              <Box w="100%">
+                                <Text align="center">
+                                  There is no completed to-do list.
+                                </Text>
+                              </Box>
                             )}
                           </List>
                         </TabPanel>
