@@ -55,7 +55,7 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
           url: `${process.env.IAMBLOCKCHAIN_HOST}/oauth/authorize`,
           params: {
             scope: "user",
-            redirect_uri: "http://localhost:3001/auth/callback/iamblockchain",
+            redirect_uri: `${process.env.HOSTNAME}/auth/callback/iamblockchain`,
           },
         },
         token: {
