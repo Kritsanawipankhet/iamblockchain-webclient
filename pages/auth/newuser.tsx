@@ -219,7 +219,7 @@ export default function Signin({ providers, csrfToken, user }: Props) {
                         onChange={handleChange}
                         onBlur={handleBlur}
                         value={values.email}
-                        readOnly={values.email ? true : false}
+                        readOnly={user.email ? true : false}
                         required={true}
                       />
                       {errors.email && touched.email && errors.email ? (

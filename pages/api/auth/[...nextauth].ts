@@ -53,7 +53,10 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
         clientSecret: process.env.IAMBLOCKCHAIN_CLIENT_SECRET,
         authorization: {
           url: `${process.env.IAMBLOCKCHAIN_HOST}/oauth/authorize`,
-          params: { scope: "user" },
+          params: {
+            scope: "user",
+            redirect_uri: "http://localhost:3001/auth/callback/iamblockchain",
+          },
         },
         token: {
           url: `${process.env.IAMBLOCKCHAIN_HOST}/api/oauth/token`,

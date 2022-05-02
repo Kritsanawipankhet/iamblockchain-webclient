@@ -32,17 +32,27 @@ export default function Signin({ providers, csrfToken }: Props) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
-  if (router.query.error === "OAuthAccountNotLinked") {
-    Swal.fire({
-      title: "Account Not Linked",
-      html: "Can't connect to the provider you need. <br><small>Because the email is already used or tied to another service provider. If you want to connect to this email You must log in and connect again.</small>",
-      icon: "error",
-      confirmButtonColor: "#007bff",
-    }).then(() => {
-      router.push("/");
-    });
-  }
-
+  useEffect(() => {
+    if (router.query.error === "OAuthAccountNotLinked") {
+      Swal.fire({
+        title: "Account Not Linked",
+        html: "Can't connect to the provider you need. <br><small>Because the email is already used or tied to another service provider. If you want to connect to this email You must log in and connect again.</small>",
+        icon: "error",
+        confirmButtonColor: "#007bff",
+      }).then(() => {
+        router.push("/");
+      });
+    } else if (router.query.error === "OAuthCallback") {
+      Swal.fire({
+        title: "Access authorization failed",
+        html: "Can't connect to the provider you need. <br><small>Please try again later..</small>",
+        icon: "error",
+        confirmButtonColor: "#007bff",
+      }).then(() => {
+        router.push("/");
+      });
+    }
+  }, []);
   return (
     <>
       <Head>
